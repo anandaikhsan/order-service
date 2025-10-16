@@ -1,7 +1,10 @@
 package resource;
 
 import dto.OrderRequest;
+import entity.EventEntity;
 import entity.SeatEntity;
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
+import io.smallrye.common.annotation.Blocking;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -26,10 +29,11 @@ public class OrderTestResource {
 
     @POST
     @Path("/simulate")
+    @Blocking
     public CompletionStage<Response> simulateOrders() {
         List<CompletableFuture<Object>> futures = new ArrayList<>();
-
-        List<SeatEntity> seats = SeatEntity.listAll();
+        PanacheQuery<SeatEntity> query = SeatEntity.findAll();
+        List<SeatEntity> seats = query.list();
 
         for (int i = 0; i < seats.size(); i++) {
             OrderRequest req = new OrderRequest();
