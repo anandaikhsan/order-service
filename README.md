@@ -1,65 +1,57 @@
-# order-service
+# Soal 1
+Bangun layanan yang menerima data dari Kafka topic, melakukan manipulasi data, dan menulisnya kembali ke Kafka atau menyimpannya ke database.
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
+## order-service
 
-If you want to learn more about Quarkus, please visit its website: <https://quarkus.io/>.
+## How to Run the Application
 
-## Running the application in dev mode
+### Building and Running with Maven and Docker Compose
 
-You can run your application in dev mode that enables live coding using:
+1. Build the application using Maven:
+   ```shell script
+   ./mvnw clean package
+   ```
 
-```shell script
-./mvnw quarkus:dev
-```
+2. Start all services using Docker Compose:
+   ```shell script
+   docker-compose up
+   ```
 
-> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at <http://localhost:8080/q/dev/>.
 
-## Packaging and running the application
+3. Access the application at:
+   - http://localhost:8080
 
-The application can be packaged using:
+## API Endpoints
 
-```shell script
-./mvnw package
-```
+The application provides the following REST endpoints:
 
-It produces the `quarkus-run.jar` file in the `target/quarkus-app/` directory.
-Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/quarkus-app/lib/` directory.
+### Event Data Endpoints
 
-The application is now runnable using `java -jar target/quarkus-app/quarkus-run.jar`.
+- `GET /api/events/{eventId}/seats` - Gets event details with seat availability for a specific event
+- `POST /api/events/cache/refresh` - Refreshes the event cache by loading all events from the database
+- `DELETE /api/events/cache/clear` - Clears all event data from the Redis cache
+- `GET /api/events/cache/status` - Gets the status of the event cache
 
-If you want to build an _über-jar_, execute the following command:
+### Order Endpoints
 
-```shell script
-./mvnw package -Dquarkus.package.jar.type=uber-jar
-```
+- `POST /api/events/order/` - Creates an order for a seat
 
-The application, packaged as an _über-jar_, is now runnable using `java -jar target/*-runner.jar`.
+### Test Endpoints
 
-## Creating a native executable
+- `POST /api/test/order/simulate` - Simulates multiple order requests for testing purposes
 
-You can create a native executable using:
+# Soal 2
+Buatkan BPMN untuk proses checkout di marketplace, termasuk penjelasan mengenai service yang digunakan serta ilustrasi BPMN-nya dalam test code tersebut.
+## Diagram
 
-```shell script
-./mvnw package -Dnative
-```
+![System Architecture Diagram](soal2/diagram.svg)
 
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using:
-
-```shell script
-./mvnw package -Dnative -Dquarkus.native.container-build=true
-```
-
-You can then execute your native executable with: `./target/order-service-1.0-SNAPSHOT-runner`
-
-If you want to learn more about building native executables, please consult <https://quarkus.io/guides/maven-tooling>.
-
-## Related Guides
-
-- Messaging ([guide](https://quarkus.io/guides/messaging)): Produce and consume messages and implement event driven and data streaming applications
-- REST ([guide](https://quarkus.io/guides/rest)): A Jakarta REST implementation utilizing build time processing and Vert.x. This extension is not compatible with the quarkus-resteasy extension, or any of the extensions that depend on it.
-- Hibernate ORM ([guide](https://quarkus.io/guides/hibernate-orm)): Define your persistent model with Hibernate ORM and Jakarta Persistence
-- REST Jackson ([guide](https://quarkus.io/guides/rest#json-serialisation)): Jackson serialization support for Quarkus REST. This extension is not compatible with the quarkus-resteasy extension, or any of the extensions that depend on it
-- Messaging - Kafka Connector ([guide](https://quarkus.io/guides/kafka-getting-started)): Connect to Kafka with Reactive Messaging
-- Hibernate ORM with Panache ([guide](https://quarkus.io/guides/hibernate-orm-panache)): Simplify your persistence code for Hibernate ORM via the active record or the repository pattern
-- Redis Client ([guide](https://quarkus.io/guides/redis)): Connect to Redis in either imperative or reactive style
-- JDBC Driver - PostgreSQL ([guide](https://quarkus.io/guides/datasource)): Connect to the PostgreSQL database via JDBC
+| Service                  | Fungsi                                               |
+| ------------------------ | ---------------------------------------------------- |
+| **Cart Service**         | Menyimpan item yang akan dibeli user                 |
+| **Inventory Service**    | Mengecek dan mengurangi stok                         |
+| **Pricing Service**      | Menghitung total harga + diskon                      |
+| **Shipping Service**     | Menentukan ongkos kirim & estimasi waktu             |
+| **Payment Service**      | Integrasi ke payment gateway (Midtrans, Xendit, dsb) |
+| **Order Service**        | Membuat dan mengelola data pesanan                   |
+| **Notification Service** | Mengirimkan email / push notification ke customer    |

@@ -2,8 +2,8 @@ package dto ;
 
 import io.quarkus.kafka.client.serialization.JsonbDeserializer;
 
-public class OrderRequestDeserializer extends JsonbDeserializer<OrderRequest> {
-    public OrderRequestDeserializer() {
-        super(OrderRequest.class);
+public class PaymentConfirmedDeserializer extends JsonbDeserializer<PaymentConfirmedEvent> {
+    public PaymentConfirmedDeserializer() {
+        super(PaymentConfirmedEvent.class);
     }
 }
